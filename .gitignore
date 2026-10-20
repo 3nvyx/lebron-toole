@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# keep the example env file
+!.env.example
+
+# Claude Code worktrees for linked sessions
+.claude/worktrees/

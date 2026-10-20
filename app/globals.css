@@ -22,5 +22,39 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* BlockNote: match the app's font and surfaces in both color schemes. */
+.bn-root,
+.bn-container {
+  --bn-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --bn-colors-editor-background: transparent;
+  --bn-colors-editor-text: var(--foreground);
+}
+
+.notes-editor .bn-editor {
+  font-size: 15px;
+  padding-block: 4px;
+}
+
+/* The theme sheet sets these on [data-color-scheme]; match that specificity. */
+.bn-root[data-color-scheme],
+.bn-root[data-color-scheme="light"],
+.bn-root[data-color-scheme="dark"] {
+  --bn-colors-editor-background: transparent;
+  --bn-colors-editor-text: var(--foreground);
+  --bn-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.notes-editor .bn-editor {
+  background: transparent;
+}
+
+/* Menus must stay opaque even though the editor surface is transparent. */
+.bn-root[data-color-scheme="light"] {
+  --bn-colors-menu-background: #ffffff;
+}
+.bn-root[data-color-scheme="dark"] {
+  --bn-colors-menu-background: #1f1f1f;
 }

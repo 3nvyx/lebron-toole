@@ -84,6 +84,8 @@ export type Op =
       section?: Section;
       owner?: string | null;
       refs?: Ref[];
+      /** Labels of refs to drop. */
+      removeRefs?: string[];
       done?: boolean;
     }
   | { type: "move_item"; match: ItemMatch; section: Section; index?: number }
@@ -105,9 +107,11 @@ export type PageEvent = {
 export type ApplyContext = { by: string; now?: string; newId?: () => string };
 
 export class OpError extends Error {
-  constructor(message: string, public readonly op: Op) {
+  readonly op: Op;
+  constructor(message: string, op: Op) {
     super(message);
     this.name = "OpError";
+    this.op = op;
   }
 }
 
@@ -221,7 +225,15 @@ export function describe(op: Op, state: PageState, item?: Item): string {
           ? `moved "${item.title}" to ${SECTION_LABELS[op.section]}`
           : op.done !== undefined
             ? `${op.done ? "checked" : "unchecked"} "${item.title}"`
-            : `updated "${item.title}"`
+            : op.title !== undefined && op.title.trim() !== item.title
+              ? `renamed "${item.title}" to "${op.title.trim()}"`
+              : op.owner !== undefined
+                ? op.owner
+                  ? `assigned "${item.title}" to ${op.owner}`
+                  : `cleared the owner of "${item.title}"`
+                : op.refs?.length
+                  ? `linked ${op.refs.map((r) => r.label).join(", ")} on "${item.title}"`
+                  : `updated "${item.title}"`
         : "updated an item";
     case "move_item":
       return item ? `moved "${item.title}" to ${SECTION_LABELS[op.section]}` : "moved an item";
@@ -328,7 +340,10 @@ export function applyOp(state: PageState, op: Op, ctx: ApplyContext): { state: P
         section,
         done: doneFor(section, op.done, existing.done),
         owner: op.owner === null ? undefined : (op.owner ?? existing.owner),
-        refs: op.refs ? mergeRefs(existing.refs, op.refs) : existing.refs,
+        refs: mergeRefs(
+          op.removeRefs ? existing.refs.filter((r) => !op.removeRefs!.some((l) => normalize(l) === normalize(r.label))) : existing.refs,
+          op.refs ?? [],
+        ),
         updatedAt: now,
         updatedBy: ctx.by,
       };
@@ -451,6 +466,7 @@ export function validateOp(raw: unknown): string | null {
       if (!optStr("title") || !optStr("owner")) return "update_item: title/owner must be strings";
       if (!section("section")) return `update_item: section must be one of ${SECTIONS.join(", ")}`;
       if (!refs("refs")) return "update_item: refs must be [{label,url}]";
+      if (op.removeRefs !== undefined && !(Array.isArray(op.removeRefs) && (op.removeRefs as unknown[]).every((s) => typeof s === "string"))) return "update_item: removeRefs must be string[]";
       return null;
     case "move_item":
       if (!match()) return "move_item needs match {id|key|title}";
