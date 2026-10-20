@@ -2,13 +2,12 @@
 
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { applyOps, countDone, itemsIn, SECTIONS, type Op, type PageEvent, type PageState } from "@/lib/model";
-import { NAME_KEY, PAGE_SLUG, STORAGE_KEY, coercePageState, templateState } from "@/lib/template";
+import { PAGE_SLUG, STORAGE_KEY, coercePageState, templateState } from "@/lib/template";
 import { commitAction, pollAction } from "@/lib/actions";
 import type { LoadResult } from "@/lib/store";
 import type { User } from "@/lib/session";
 import { relativeTime } from "@/lib/time";
-import { setLocalStorageItem, useLocalStorageItem, useNow } from "@/lib/use-client-store";
-import { NamePrompt } from "./name-prompt";
+import { useLocalStorageItem, useNow } from "@/lib/use-client-store";
 import { RepoChips, StackChips } from "./chips";
 import { SectionList } from "./section-list";
 import { DynamicNotesEditor } from "./dynamic-notes-editor";
@@ -41,7 +40,7 @@ const IDLE_MS = 5_000;
 const NOTES_DEBOUNCE_MS = 800;
 const TEXT_DEBOUNCE_MS = 600;
 
-export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResult; initialEvents: PageEvent[]; user: User | null }) {
+export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResult; initialEvents: PageEvent[]; user: User }) {
   const local = initial.source !== "db";
   const [liveState, setLive] = useState<Live | null>(
     initial.source === "db"
@@ -60,12 +59,10 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
   const [dragging, setDragging] = useState<string | null>(null);
 
   // Browser-only inputs, read through useSyncExternalStore (undefined until hydrated).
-  const storedName = useLocalStorageItem(NAME_KEY);
   const storedPage = useLocalStorageItem(local ? STORAGE_KEY : "readme:unused");
   const now = useNow();
-  // A GitHub login wins over the browser-only name prompt.
-  const name = user ? user.login : (storedName ?? null);
-  const nameLoaded = Boolean(user) || storedName !== undefined;
+  // The GitHub login is the stable identity on every change; the display name is for people.
+  const name = user.login;
 
   // Local mode: the page starts from localStorage (or the template) and only moves into
   // React state on the first edit, so nothing has to be set inside an effect.
@@ -97,7 +94,7 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
   const editorRef = useRef<NotesEditorHandle | null>(null);
   const notesTimer = useRef<number | undefined>(undefined);
   const pendingNotes = useRef<unknown[] | null>(null);
-  const by = name ?? "anonymous";
+  const by = name;
   const byRef = useRef(by);
   useEffect(() => {
     byRef.current = by;
@@ -266,10 +263,6 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
 
   return (
     <div>
-      {nameLoaded && !name && (
-        <NamePrompt onSubmit={(n) => setLocalStorageItem(NAME_KEY, n)} />
-      )}
-
       <div className="text-neutral-400 dark:text-neutral-500" aria-hidden>
         <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 3 4 7.5v9L12 21l8-4.5v-9z" />
@@ -285,7 +278,7 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
         className="mt-4 w-full bg-transparent text-[40px] font-bold leading-tight tracking-tight outline-none placeholder:text-neutral-300 dark:placeholder:text-neutral-700"
       />
 
-      <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-neutral-500">
+      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-neutral-500">
         <span>
           {done} of {total} done
         </span>
@@ -298,40 +291,22 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
         <span className={st.tone} title={st.title}>
           {st.label}
         </span>
-        {user ? (
-          <>
-            <span aria-hidden>·</span>
-            <span className="inline-flex items-center gap-1.5">
-              {user.avatarUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={user.avatarUrl} alt="" width={16} height={16} className="rounded-full" />
-              )}
-              <span className="text-neutral-700 dark:text-neutral-300">{user.login}</span>
-              <form action="/api/auth/logout" method="post" className="inline">
-                <button type="submit" className="text-neutral-400 underline-offset-2 hover:underline">
-                  sign out
-                </button>
-              </form>
-            </span>
-          </>
-        ) : (
-          name && (
-            <>
-              <span aria-hidden>·</span>
-              <span>
-                you are <span className="text-neutral-700 dark:text-neutral-300">{name}</span>{" "}
-                <button
-                  type="button"
-                  className="text-neutral-400 underline-offset-2 hover:underline"
-                  onClick={() => setLocalStorageItem(NAME_KEY, null)}
-                >
-                  not you?
-                </button>
-              </span>
-            </>
-          )
-        )}
-      </p>
+        <span aria-hidden>·</span>
+        <span className="inline-flex items-center gap-1.5">
+          {user.avatarUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.avatarUrl} alt="" width={18} height={18} className="rounded-full" />
+          )}
+          <span className="text-neutral-700 dark:text-neutral-300" title={`@${user.login}`}>
+            {user.name}
+          </span>
+          <form action="/api/auth/logout" method="post" className="inline">
+            <button type="submit" className="text-neutral-400 underline-offset-2 hover:underline">
+              sign out
+            </button>
+          </form>
+        </span>
+      </div>
 
       <DebouncedText
         as="p"
@@ -352,7 +327,7 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
             key={s}
             section={s}
             items={itemsIn(state, s)}
-            me={name ?? ""}
+            me={name}
             onOps={commit}
             focusId={focusId}
             onFocused={onFocused}

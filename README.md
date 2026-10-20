@@ -21,9 +21,9 @@ Open http://localhost:3000. Without Neon the page saves to the browser's localSt
 
 ## Sign in with GitHub
 
-Identity comes from GitHub so every change on the page says who made it. Create an OAuth app at <https://github.com/settings/developers> with the callback URL `http://localhost:3100/api/auth/github/callback` (use your deployed origin in production), then set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in `.env.local` and restart. Optionally restrict access with `GITHUB_ALLOWED_USERS=login1,login2`.
+Identity comes from GitHub, so every change on the page shows a real name and avatar. Create an OAuth app at <https://github.com/settings/applications/new> with the callback URL `http://localhost:3100/api/auth/github/callback` (use your deployed origin in production), then set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in `.env.local` and restart. Optionally restrict access with `GITHUB_ALLOWED_USERS=login1,login2`.
 
-Without those two variables the page skips the login and asks for a name once, stored in the browser. Agents never log in: they use `README_TOKEN` (see below).
+Until those two variables are set the page shows the setup steps instead of the editor. Agents never log in: they use `README_TOKEN` (see below).
 
 ## Agents
 

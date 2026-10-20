@@ -10,7 +10,6 @@ import { makeId, SECTIONS } from "./model.ts";
 
 export const PAGE_SLUG = "main";
 export const STORAGE_KEY = "readme:main";
-export const NAME_KEY = "readme:name";
 
 const TEMPLATE_BY = "template";
 
