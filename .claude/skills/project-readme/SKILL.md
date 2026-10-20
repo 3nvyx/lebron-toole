@@ -7,6 +7,16 @@ description: Read and update the team's live README page (scope, in progress, to
 
 The live README is a Notion-style page at `README_URL` (default `http://localhost:3000`) that humans edit in the browser and agents update over HTTP. The team scaffolds fast and loses track of scope; this page is the single source of truth for Scope, In progress, To do, Proposed, Done, Repos and Stack. Keep it current as you work. Do not maintain a parallel list anywhere else.
 
+## Prefer the MCP tools when they are connected
+
+When this session has `readme_*` tools (the `readme` MCP server, served by the app at `/api/mcp`), use them instead of the CLI; they take the same inputs and answer with the same event messages. `readme_get` replaces `npm run readme -- get`, `readme_upsert_item` with `section: in_progress` replaces `start`, `readme_set_status` with `section: done` replaces `done`, and `readme_propose`, `readme_link_repo`, `readme_add_stack`, `readme_log`, `readme_events` match the CLI commands of the same name. Connect once per machine:
+
+```sh
+claude mcp add --transport http readme https://<host>/api/mcp --header "Authorization: Bearer $README_TOKEN"
+```
+
+The SessionStart hook in `.claude/settings.json` already prints Scope, In progress and To do when the session begins; read that before starting work.
+
 ## When to call it
 
 1. **Starting a task.** Read the page first so you do not duplicate someone else's work and you know what is in scope:
@@ -33,6 +43,8 @@ Rules:
 - If it prints `Could not reach ...`, the dev server is down; mention it once and continue.
 
 ## Remote machines
+
+Prefer the MCP route above. For raw HTTP:
 
 Set `README_URL` to the team's server and `README_TOKEN` to the shared token (when the server has none, only localhost is accepted).
 

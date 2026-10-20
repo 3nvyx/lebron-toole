@@ -14,10 +14,12 @@
     "@blocknote/core": "^0.56.0",
     "@blocknote/mantine": "^0.56.0",
     "@blocknote/react": "^0.56.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "@neondatabase/serverless": "^1.2.0",
     "next": "16.4.2",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
