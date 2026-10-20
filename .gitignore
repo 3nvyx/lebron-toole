@@ -45,3 +45,4 @@ next-env.d.ts
 
 # Claude Code worktrees for linked sessions
 .claude/worktrees/
+.neon
