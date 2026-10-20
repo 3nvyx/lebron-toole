@@ -9,7 +9,7 @@ const ERRORS: Record<string, string> = {
 export function SignIn({ error }: { error?: string }) {
   return (
     <div className="mt-10 max-w-md">
-      <h1 className="text-[32px] font-bold tracking-tight">Live README</h1>
+      <h1 className="text-[32px] font-bold tracking-tight">Lebron Toole</h1>
       <p className="mt-2 text-[15px] text-neutral-500">Sign in with GitHub to see and edit the team page. Your GitHub login is what shows next to every change.</p>
       <a
         href="/api/auth/github"

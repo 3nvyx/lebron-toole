@@ -13,7 +13,7 @@ export const STORAGE_KEY = "readme:main";
 
 const TEMPLATE_BY = "template";
 
-const TEMPLATE_TITLE = "Untitled app";
+const TEMPLATE_TITLE = "Lebron Toole";
 const TEMPLATE_SUMMARY = "One line on what this app is.";
 
 function templateRepos(): Repo[] {

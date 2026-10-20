@@ -38,7 +38,7 @@ for (const line of lines) {
   if (keep && line.trim()) out.push(line);
 }
 
-const title = lines.find((l) => l.startsWith("# ")) || "# Live README";
+const title = lines.find((l) => l.startsWith("# ")) || "# Lebron Toole";
 console.log(`${title} (${BASE})`);
 console.log(out.length ? out.join("\n").trim() : "_Scope, In progress and To do are empty._");
 console.log("\nUpdate it as you work: the `readme` MCP tools if connected, else `npm run readme -- start|done|propose ...`.");

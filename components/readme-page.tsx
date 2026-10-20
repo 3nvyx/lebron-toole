@@ -273,7 +273,7 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
       <DebouncedText
         as="h1"
         value={state.title}
-        placeholder="Untitled app"
+        placeholder="Lebron Toole"
         onCommit={(title) => commit([{ type: "set_page", title }])}
         className="mt-4 w-full bg-transparent text-[40px] font-bold leading-tight tracking-tight outline-none placeholder:text-neutral-300 dark:placeholder:text-neutral-700"
       />

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Live README",
+  title: "Lebron Toole",
   description: "A living project page the team and its agents keep up to date.",
 };
 

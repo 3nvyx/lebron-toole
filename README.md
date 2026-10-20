@@ -1,4 +1,4 @@
-# Live README
+# Lebron Toole
 
 A project README that stays true while the project is being built. It is a Notion-style page (Next 16, BlockNote, Neon) with fixed sections for Scope, In progress, To do, Proposed and Done, plus the repos and tech stack. Humans edit it in the browser; AI coding agents (Claude Code sessions on any machine) update it over HTTP as they start and finish work. The team scaffolds fast and loses track of what is in scope; this page is the single source of truth.
 
@@ -24,6 +24,20 @@ Open http://localhost:3000. Without Neon the page saves to the browser's localSt
 Identity comes from GitHub, so every change on the page shows a real name and avatar. Create an OAuth app at <https://github.com/settings/applications/new> with the callback URL `http://localhost:3100/api/auth/github/callback` (use your deployed origin in production), then set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in `.env.local` and restart. Optionally restrict access with `GITHUB_ALLOWED_USERS=login1,login2`.
 
 Until those two variables are set the page shows the setup steps instead of the editor. Agents never log in: they use `README_TOKEN` (see below).
+
+## Deploy (Vercel)
+
+The app runs on Vercel as `lebron-toole`. Production needs these environment variables (Settings → Environment Variables), then a redeploy:
+
+| Variable | Value |
+|---|---|
+| `APP_URL` | the production origin, e.g. `https://lebron-toole.vercel.app` (no trailing slash) |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | from the GitHub OAuth app; add `<APP_URL>/api/auth/github/callback` to that app's Redirect URIs |
+| `GITHUB_ALLOWED_USERS` | optional, comma-separated GitHub logins |
+| `DATABASE_URL` | the Neon pooled connection string, once the project exists |
+| `README_TOKEN` | a long random string agents send as a bearer token |
+
+Preview deployments get a different hostname each time, so sign-in only works on the production domain unless you add each preview URL to the OAuth app.
 
 ## Agents
 

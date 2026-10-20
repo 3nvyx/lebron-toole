@@ -152,7 +152,7 @@ test("toMarkdown renders done items, repo lines, owner, refs, key and notes", ()
     ] },
   );
   const md = toMarkdown(s);
-  assert.match(md, /^# Untitled app\n/);
+  assert.match(md, /^# Lebron Toole\n/);
   assert.ok(md.includes("- Frontend: https://github.com/org/frontend"));
   assert.ok(md.includes("- [x] Ship it — @eric (PR: https://github.com/org/x/pull/1) `key:ship`"));
   assert.ok(md.includes("## To do\n- [ ] Open task"));

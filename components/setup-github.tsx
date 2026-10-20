@@ -4,7 +4,7 @@ export function SetupGitHub({ origin }: { origin: string }) {
   const code = "rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[13px] dark:bg-neutral-800";
   return (
     <div className="mt-10 max-w-xl">
-      <h1 className="text-[32px] font-bold tracking-tight">Live README</h1>
+      <h1 className="text-[32px] font-bold tracking-tight">Lebron Toole</h1>
       <p className="mt-2 text-[15px] text-neutral-500">
         Everyone signs in with GitHub, so every change on the page shows a real name and avatar. Finish this one-time setup first.
       </p>

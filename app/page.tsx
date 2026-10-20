@@ -9,7 +9,7 @@ import { SetupGitHub } from "@/components/setup-github";
 import { getUser, githubConfigured } from "@/lib/session";
 import { headers } from "next/headers";
 
-export const metadata: Metadata = { title: "Live README" };
+export const metadata: Metadata = { title: "Lebron Toole" };
 
 export default function Page({ searchParams }: PageProps<"/">) {
   return (
