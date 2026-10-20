@@ -51,6 +51,18 @@ curl -s -X PATCH "$README_URL/api/page" \
   -d '{"by":"claude@buildbox","ops":[{"type":"upsert_item","key":"auth-api","title":"Auth API","section":"in_progress"}]}'
 ```
 
+## Connect from Claude Code
+
+The app also serves the page as an [MCP](https://modelcontextprotocol.io) server at `/api/mcp` (Streamable HTTP), so Claude Code on any machine gets it as tools without the CLI:
+
+```sh
+claude mcp add --transport http readme https://<host>/api/mcp --header "Authorization: Bearer $README_TOKEN"
+```
+
+Tools: `readme_get`, `readme_upsert_item`, `readme_set_status`, `readme_propose`, `readme_link_repo`, `readme_add_stack`, `readme_log`, `readme_events`. Each one maps to the same ops as the HTTP API and returns the server's event messages as text. Locally (no token) use `http://localhost:3000/api/mcp`. Until Neon is connected every tool answers "Not connected" instead of failing.
+
+`.claude/settings.json` adds a Claude Code SessionStart hook (`scripts/session-start.mjs`) that prints Scope, In progress and To do at the start of every session; set `README_URL` and `README_TOKEN` in the shell that starts Claude Code. When the server is unreachable it prints one line and the session starts anyway.
+
 ## How it works
 
 - The page is one aggregate state (`lib/model.ts`): title, summary, repos, stack, items with stable ids, and free-form notes.
@@ -69,10 +81,9 @@ curl -s -X PATCH "$README_URL/api/page" \
 | `npm run lint` | ESLint |
 | `npm test` | Run the tests (model reducer and API) |
 | `npm run readme -- <cmd>` | CLI for the page; `--help` lists commands |
+| `node scripts/session-start.mjs` | What the SessionStart hook prints (Scope, In progress, To do) |
 
 ## Roadmap
 
 - Multiple pages, one per app or team.
-- An MCP server so agents get the page as tools instead of a CLI.
-- A Claude Code SessionStart hook that loads the current scope into every agent session.
 - Real-time collaborative notes via Yjs instead of last-write-wins.
