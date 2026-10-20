@@ -1,10 +1,11 @@
 /**
  * Bearer-token auth for the HTTP API.
  *
- * Order: README_TOKEN env match -> api_keys row -> localhost (only when no
- * README_TOKEN is configured). Otherwise 401.
+ * Order: README_TOKEN env match -> api_keys row -> signed-in GitHub session
+ * cookie -> localhost (only when no README_TOKEN is configured). Otherwise 401.
  */
 import { getSql } from "./db";
+import { getUser } from "./session";
 
 export type AuthResult = { ok: true; name: string } | { ok: false; status: 401 | 403; message: string };
 
@@ -47,6 +48,10 @@ export async function authorize(req: Request): Promise<AuthResult> {
       }
     }
   }
+
+  // A browser that is signed in with GitHub may call the API directly.
+  const user = await getUser();
+  if (user) return { ok: true, name: user.login };
 
   if (!configured && isLocalHost(req)) return { ok: true, name: "localhost" };
 

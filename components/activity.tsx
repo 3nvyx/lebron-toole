@@ -14,7 +14,7 @@ export function Activity({ events, now }: { events: PageEvent[]; now: number }) 
       <ul className="mt-2 space-y-1 text-[13px] text-neutral-500">
         {shown.map((e, i) => (
           <li key={e.id ?? `${e.at}-${i}`} className="flex gap-2">
-            <span className="w-16 shrink-0 tabular-nums text-neutral-400">{now ? relativeTime(e.at, now) : ""}</span>
+            <span className="w-20 shrink-0 whitespace-nowrap tabular-nums text-neutral-400">{now ? relativeTime(e.at, now) : ""}</span>
             <span>
               <span className="text-neutral-700 dark:text-neutral-300">{e.by}</span> {e.message}
             </span>

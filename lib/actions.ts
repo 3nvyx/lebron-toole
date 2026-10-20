@@ -5,6 +5,7 @@
  * the client owns rendering, so nothing here refreshes or revalidates.
  */
 import type { Op, PageEvent } from "./model";
+import { getUser } from "./session";
 import { commit, listEvents, loadPage, pollPage, type CommitResult, type LoadResult } from "./store";
 
 export async function loadPageAction(slug: string): Promise<LoadResult> {
@@ -17,7 +18,10 @@ export async function commitAction(
   by: string,
   expectedNotesVersion?: number,
 ): Promise<CommitResult> {
-  return commit(slug, ops, by, { expectedNotesVersion });
+  // With GitHub sign-in on, the session decides who made the change; the
+  // client-supplied name is only a fallback for the no-auth local mode.
+  const user = await getUser();
+  return commit(slug, ops, user?.login ?? by, { expectedNotesVersion });
 }
 
 export async function pollAction(slug: string, sinceVersion: number) {

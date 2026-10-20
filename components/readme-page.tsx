@@ -5,6 +5,7 @@ import { applyOps, countDone, itemsIn, SECTIONS, type Op, type PageEvent, type P
 import { NAME_KEY, PAGE_SLUG, STORAGE_KEY, coercePageState, templateState } from "@/lib/template";
 import { commitAction, pollAction } from "@/lib/actions";
 import type { LoadResult } from "@/lib/store";
+import type { User } from "@/lib/session";
 import { relativeTime } from "@/lib/time";
 import { setLocalStorageItem, useLocalStorageItem, useNow } from "@/lib/use-client-store";
 import { NamePrompt } from "./name-prompt";
@@ -40,7 +41,7 @@ const IDLE_MS = 5_000;
 const NOTES_DEBOUNCE_MS = 800;
 const TEXT_DEBOUNCE_MS = 600;
 
-export function ReadmePage({ initial, initialEvents }: { initial: LoadResult; initialEvents: PageEvent[] }) {
+export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResult; initialEvents: PageEvent[]; user: User | null }) {
   const local = initial.source !== "db";
   const [liveState, setLive] = useState<Live | null>(
     initial.source === "db"
@@ -62,8 +63,9 @@ export function ReadmePage({ initial, initialEvents }: { initial: LoadResult; in
   const storedName = useLocalStorageItem(NAME_KEY);
   const storedPage = useLocalStorageItem(local ? STORAGE_KEY : "readme:unused");
   const now = useNow();
-  const name = storedName ?? null;
-  const nameLoaded = storedName !== undefined;
+  // A GitHub login wins over the browser-only name prompt.
+  const name = user ? user.login : (storedName ?? null);
+  const nameLoaded = Boolean(user) || storedName !== undefined;
 
   // Local mode: the page starts from localStorage (or the template) and only moves into
   // React state on the first edit, so nothing has to be set inside an effect.
@@ -296,20 +298,38 @@ export function ReadmePage({ initial, initialEvents }: { initial: LoadResult; in
         <span className={st.tone} title={st.title}>
           {st.label}
         </span>
-        {name && (
+        {user ? (
           <>
             <span aria-hidden>·</span>
-            <span>
-              you are <span className="text-neutral-700 dark:text-neutral-300">{name}</span>{" "}
-              <button
-                type="button"
-                className="text-neutral-400 underline-offset-2 hover:underline"
-                onClick={() => setLocalStorageItem(NAME_KEY, null)}
-              >
-                not you?
-              </button>
+            <span className="inline-flex items-center gap-1.5">
+              {user.avatarUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={user.avatarUrl} alt="" width={16} height={16} className="rounded-full" />
+              )}
+              <span className="text-neutral-700 dark:text-neutral-300">{user.login}</span>
+              <form action="/api/auth/logout" method="post" className="inline">
+                <button type="submit" className="text-neutral-400 underline-offset-2 hover:underline">
+                  sign out
+                </button>
+              </form>
             </span>
           </>
+        ) : (
+          name && (
+            <>
+              <span aria-hidden>·</span>
+              <span>
+                you are <span className="text-neutral-700 dark:text-neutral-300">{name}</span>{" "}
+                <button
+                  type="button"
+                  className="text-neutral-400 underline-offset-2 hover:underline"
+                  onClick={() => setLocalStorageItem(NAME_KEY, null)}
+                >
+                  not you?
+                </button>
+              </span>
+            </>
+          )
         )}
       </p>
 

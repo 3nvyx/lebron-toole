@@ -1,21 +1,64 @@
 @import "tailwindcss";
 
 :root {
+  /* Notion light: warm near-black ink on white. */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #37352f;
+  --n-50: rgba(55, 53, 47, 0.04);
+  --n-100: rgba(55, 53, 47, 0.08);
+  --n-200: rgba(55, 53, 47, 0.09);
+  --n-300: rgba(55, 53, 47, 0.16);
+  --n-400: rgba(55, 53, 47, 0.45);
+  --n-500: rgba(55, 53, 47, 0.65);
+  --n-600: rgba(55, 53, 47, 0.8);
+  --n-700: #37352f;
+  --n-800: #2b2a26;
+  --n-900: #1f1e1b;
+  --n-950: #161513;
+  --menu-bg: #ffffff;
+  --menu-hover: rgba(55, 53, 47, 0.08);
 }
 
+/* The neutral utilities read these, so chips, borders, muted text and hover
+   states follow the page palette in both schemes instead of Tailwind's grays. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-neutral-50: var(--n-50);
+  --color-neutral-100: var(--n-100);
+  --color-neutral-200: var(--n-200);
+  --color-neutral-300: var(--n-300);
+  --color-neutral-400: var(--n-400);
+  --color-neutral-500: var(--n-500);
+  --color-neutral-600: var(--n-600);
+  --color-neutral-700: var(--n-700);
+  --color-neutral-800: var(--n-800);
+  --color-neutral-900: var(--n-900);
+  --color-neutral-950: var(--n-950);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Notion dark: charcoal page, text at 81% white, hairlines at 9%. */
+    --background: #191919;
+    --foreground: rgba(255, 255, 255, 0.81);
+    /* Dark mode reads the scale the other way round: high numbers are surfaces,
+       low numbers are light text (dark:text-neutral-200, dark:bg-neutral-100). */
+    --n-50: #ffffff;
+    --n-100: rgba(255, 255, 255, 0.92);
+    --n-200: rgba(255, 255, 255, 0.81);
+    --n-300: rgba(255, 255, 255, 0.65);
+    --n-400: rgba(255, 255, 255, 0.36);
+    --n-500: rgba(255, 255, 255, 0.46);
+    --n-600: rgba(255, 255, 255, 0.28);
+    --n-700: rgba(255, 255, 255, 0.13);
+    --n-800: rgba(255, 255, 255, 0.094);
+    --n-900: rgba(255, 255, 255, 0.055);
+    --n-950: #202020;
+    --menu-bg: #252525;
+    --menu-hover: rgba(255, 255, 255, 0.055);
   }
 }
 
@@ -52,9 +95,9 @@ body {
 }
 
 /* Menus must stay opaque even though the editor surface is transparent. */
-.bn-root[data-color-scheme="light"] {
-  --bn-colors-menu-background: #ffffff;
-}
+.bn-root[data-color-scheme="light"],
 .bn-root[data-color-scheme="dark"] {
-  --bn-colors-menu-background: #1f1f1f;
+  --bn-colors-menu-background: var(--menu-bg);
+  --bn-colors-hovered-background: var(--menu-hover);
+  --bn-colors-side-menu: var(--n-400);
 }

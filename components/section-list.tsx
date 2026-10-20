@@ -193,7 +193,7 @@ function ItemRow({ item, me, onOps, autoFocus, onFocused, onEnter, onBackspaceEm
                 inputRef.current?.blur();
               }
             }}
-            className={`h-7 w-full min-w-0 bg-transparent text-[15px] outline-none ${done && !isScope ? "text-neutral-400 line-through" : ""} ${done && isScope ? "text-neutral-500" : ""}`}
+            className={`h-7 w-full min-w-0 bg-transparent text-[16px] outline-none ${done && !isScope ? "text-neutral-400 line-through" : ""} ${done && isScope ? "text-neutral-500" : ""}`}
           />
           {item.owner && (
             <span className="shrink-0 rounded-md bg-neutral-100 px-1.5 py-0.5 text-[12px] text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300" title={`Owner: ${item.owner}`}>
@@ -318,7 +318,7 @@ function DraftRow({ onCommit, onCancel }: { onCommit: (title: string, again: boo
             onCancel();
           }
         }}
-        className="h-7 w-full min-w-0 bg-transparent text-[15px] outline-none placeholder:text-neutral-400"
+        className="h-7 w-full min-w-0 bg-transparent text-[16px] outline-none placeholder:text-neutral-400"
       />
     </div>
   );

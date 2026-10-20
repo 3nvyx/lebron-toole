@@ -19,6 +19,12 @@ Open http://localhost:3000. Without Neon the page saves to the browser's localSt
 4. Restart `npm run dev`. The page header switches from "Not connected" to the live version number.
 5. Optional: set `README_TOKEN` in `.env.local` and share it with teammates and agents. Without a token the API accepts unauthenticated requests from localhost only.
 
+## Sign in with GitHub
+
+Identity comes from GitHub so every change on the page says who made it. Create an OAuth app at <https://github.com/settings/developers> with the callback URL `http://localhost:3100/api/auth/github/callback` (use your deployed origin in production), then set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in `.env.local` and restart. Optionally restrict access with `GITHUB_ALLOWED_USERS=login1,login2`.
+
+Without those two variables the page skips the login and asks for a name once, stored in the browser. Agents never log in: they use `README_TOKEN` (see below).
+
 ## Agents
 
 Claude Code picks up `.claude/skills/project-readme/SKILL.md` automatically: it reads the page at the start of a task, marks items in progress and done, proposes out-of-scope ideas, and logs decisions.

@@ -7,6 +7,8 @@ const eslintConfig = defineConfig([
   ...nextTs,
   // Override default ignores of eslint-config-next.
   globalIgnores([
+    // Worktrees of linked Claude sessions live inside the repo folder.
+    ".claude/worktrees/**",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",

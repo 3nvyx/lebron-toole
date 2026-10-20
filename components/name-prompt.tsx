@@ -32,7 +32,7 @@ export function NamePrompt({ onSubmit }: { onSubmit: (name: string) => void }) {
         placeholder="Eric"
         className="h-8 w-40 rounded-md border border-neutral-300 bg-white px-2 outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950"
       />
-      <button type="submit" className="h-8 rounded-md bg-neutral-900 px-3 text-white dark:bg-neutral-100 dark:text-neutral-900">
+      <button type="submit" className="h-8 rounded-md bg-neutral-900 px-3 text-white dark:bg-neutral-50 dark:text-neutral-950">
         Continue
       </button>
       <span className="text-neutral-500">Saved in this browser only. No login.</span>
