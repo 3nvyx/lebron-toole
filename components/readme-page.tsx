@@ -263,12 +263,8 @@ export function ReadmePage({ initial, initialEvents, user }: { initial: LoadResu
 
   return (
     <div>
-      <div className="text-neutral-400 dark:text-neutral-500" aria-hidden>
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 3 4 7.5v9L12 21l8-4.5v-9z" />
-          <path d="M4 7.5 12 12l8-4.5M12 12v9" />
-        </svg>
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/lebron.gif" alt="" width={64} height={64} className="h-16 w-16 rounded-lg object-cover" />
 
       <DebouncedText
         as="h1"
